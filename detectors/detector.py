@@ -1,19 +1,31 @@
-from detectors.yolo.yolo_detector import get_bounding_boxes as yolo_gbb
-from detectors.haarc.hc_detector import get_bounding_boxes as hc_gbb
-from detectors.bgsub.bgsub_detector import get_bounding_boxes as bgsub_gbb
-from detectors.ssd.ssd import get_bounding_boxes as ssd_gbb
-from detectors.tfoda.tfoda_detector import get_bounding_boxes as tfoda_gbb
+'''
+Detectors entry point.
+'''
+
+# pylint: disable=import-outside-toplevel
+
+import sys
+from util.logger import get_logger
+
+
+logger = get_logger()
 
 def get_bounding_boxes(frame, model):
+    '''
+    Run object detection algorithm and return a list of bounding boxes and other metadata.
+    '''
     if model == 'yolo':
-        return yolo_gbb(frame)
-    elif model == 'haarc':
-        return hc_gbb(frame)
-    elif model == 'bgsub':
-        return bgsub_gbb(frame)
-    elif model == 'ssd':
-        return ssd_gbb(frame)
+        from detectors.yolo import get_bounding_boxes as gbb
+    elif model == 'haarcascade':
+        from detectors.haarcascade import get_bounding_boxes as gbb
     elif model == 'tfoda':
-        return tfoda_gbb(frame)
+        from detectors.tfoda import get_bounding_boxes as gbb
+    elif model == 'detectron2':
+        from detectors.detectron2 import get_bounding_boxes as gbb
     else:
-        raise Exception('Invalid detector model, algorithm or API specified (options: yolo, tfoda, haarc, bgsub, ssd)')
+        logger.error('Invalid detector model, algorithm or API specified (options: yolo, tfoda, detectron2, haarcascade)', extra={
+            'meta': {'label': 'INVALID_DETECTION_ALGORITHM'},
+        })
+        sys.exit()
+
+    return gbb(frame)

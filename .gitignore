@@ -1,8 +1,6 @@
+data/*
+!data/.gitkeep
+.vscode/
 *.pyc
-yolov3.weights
-*.caffemodel
-screenshots/*
-!screenshots/.gitkeep
-videos/*
-!videos/.gitkeep
-log.txt
+.env
+.coverage
